@@ -1,6 +1,10 @@
 import jwt from "jsonwebtoken";
 
 export default function createUserToken(user, res) {
+	if (!process.env.SECRET) {
+		throw new Error("Variável SECRET não definida no ambiente");
+	}
+
     const token = jwt.sign(
         {
             id: user._id,

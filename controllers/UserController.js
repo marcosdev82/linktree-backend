@@ -60,7 +60,10 @@ export async function createUser(req, res) {
 		return createUserToken(user, res);
 		
 	} catch (error) {
-		res.status(500).json({ message: "Erro ao criar usuário", error });
+		res.status(500).json({
+			message: "Erro ao criar usuário",
+			error: error.message,
+		});
 	}
 }
 
