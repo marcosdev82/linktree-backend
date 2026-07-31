@@ -93,6 +93,24 @@ export async function getUserBySlug(req, res) {
 	}
 }
 
+export async function getUserById(req, res) {
+
+	const { id } = req.params;
+	 
+	try {
+		const user = await User.findById(id, { password: 0 }).select("-password");
+
+		if (!user) {
+			res.status(404).json({ message: "Usuário não encontrado" });
+			return;
+		}
+
+		res.status(200).json(user);
+	} catch (error) {
+		res.status(500).json({ message: "Erro ao buscar usuário", error: error.message });
+	}
+}
+
 export async function loginUser(req, res) {
 	try {
 		const { email, password } = req.body ?? {};
