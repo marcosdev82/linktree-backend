@@ -25,16 +25,37 @@ async function createUniqueSlug(base) {
 export async function createUser(req, res) {
 	
 	try {
-		const { name, email, password, bio, theme, avatar } = req.body;
+		const { name, email, password, confirmPassword, bio, theme, avatar } = req.body;
 
-		if (!name || !email || !password) {
-			res.status(400).json({ message: "name, email e password são obrigatórios" });
+		if (!name) {
+			res.status(422).json({ message: "Nome é obrigatório" });
+			return;
+		}
+
+		if (!email) {
+			res.status(422).json({ message: "E-mail é obrigatório" });
+			return;
+		}
+
+		if (!password) {
+			res.status(422).json({ message: "Senha é obrigatória" });
+			return;
+		}
+
+		if (!confirmPassword) {
+			res.status(422).json({ message: "Confirmação de senha é obrigatória" });
+			return;
+		}
+
+		if (password !== confirmPassword) {
+			res.status(422).json({ message: "As senhas não coincidem" });
 			return;
 		}
 
 		const existingUser = await User.exists({ email: email.toLowerCase() });
+
 		if (existingUser) {
-			res.status(409).json({ message: "E-mail já cadastrado" });
+			res.status(422).json({ message: "E-mail já cadastrado" });
 			return;
 		}
 
