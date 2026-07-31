@@ -1,26 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
-
-function normalizeSlug(name) {
-	return name
-		.toLowerCase()
-		.normalize("NFD")
-		.replace(/[\u0300-\u036f]/g, "")
-		.replace(/[^a-z0-9]+/g, "-")
-		.replace(/(^-|-$)+/g, "");
-}
-
-async function createUniqueSlug(base) {
-	let slug = base;
-	let counter = 1;
-
-	while (await User.exists({ slug })) {
-		counter += 1;
-		slug = `${base}-${counter}`;
-	}
-
-	return slug;
-}
+import { createUniqueSlug, normalizeSlug } from "../utils/userSlug.js";
 
 export async function createUser(req, res) {
 	
