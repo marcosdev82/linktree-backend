@@ -58,12 +58,13 @@ export async function createUser(req, res) {
 			res.status(422).json({ message: "E-mail já cadastrado" });
 			return;
 		}
-
-		const passwordHash = await bcrypt.hash(password, 10);
+        
+		const saltRounds = 12;	
+		const passwordHash = await bcrypt.hash(password, saltRounds);
 		const baseSlug = normalizeSlug(name) || "usuario";
 		const slug = await createUniqueSlug(baseSlug);
 
-		const user = await User.create({
+		const user = new User({
 			name,
 			email,
 			password: passwordHash,
@@ -72,6 +73,8 @@ export async function createUser(req, res) {
 			theme: theme ?? "default",
 			avatar: avatar ?? "",
 		});
+
+		await user.save();
 
 		const responseUser = {
 			_id: user._id,
@@ -86,7 +89,11 @@ export async function createUser(req, res) {
 			updatedAt: user.updatedAt,
 		};
 
-		res.status(201).json(responseUser);
+		res.status(201).json({
+			message: "Usuário criado com sucesso",
+			newUser: responseUser,
+		});
+		
 	} catch (error) {
 		res.status(500).json({ message: "Erro ao criar usuário", error });
 	}
