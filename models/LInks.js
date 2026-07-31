@@ -1,19 +1,6 @@
 import mongoose from "mongoose";
 
-interface ILink {
-	_id: mongoose.Types.ObjectId;
-	userId: mongoose.Types.ObjectId;
-	title: string;
-	url: string;
-	icon: string;
-	order: number;
-	active: boolean;
-	clicks: number;
-	createdAt: Date;
-	updatedAt: Date;
-}
-
-const linkSchema = new mongoose.Schema<ILink>(
+const linkSchema = new mongoose.Schema(
 	{
 		userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
 		title: { type: String, required: true, trim: true },
@@ -30,6 +17,6 @@ const linkSchema = new mongoose.Schema<ILink>(
 
 linkSchema.index({ userId: 1, order: 1 });
 
-const Link = mongoose.model<ILink>("Link", linkSchema);
+const Link = mongoose.model("Link", linkSchema);
 
 export default Link;

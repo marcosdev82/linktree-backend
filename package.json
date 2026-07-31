@@ -4,10 +4,10 @@
   "description": "Backend da aplicacao Linktree",
   "private": true,
   "type": "module",
-  "main": "views/index.ts",
+  "main": "views/index.js",
   "scripts": {
-    "dev": "nodemon --watch views --ext ts --exec \"node --experimental-strip-types\" views/index.ts",
-    "start": "node --experimental-strip-types views/index.ts"
+    "dev": "nodemon --watch views --watch routes --watch controllers --watch models --watch config --ext js --exec \"node\" views/index.js",
+    "start": "node views/index.js"
   },
   "license": "ISC",
   "dependencies": {
@@ -20,11 +20,6 @@
     "multer": "^2.2.0"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/node": "^26.1.2",
-    "nodemon": "^3.1.14",
-    "tsx": "^4.23.1",
-    "typescript": "^7.0.2"
+    "nodemon": "^3.1.14"
   }
 }

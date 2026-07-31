@@ -1,23 +1,6 @@
 import mongoose from "mongoose";
 
-interface IUser {
-	_id: mongoose.Types.ObjectId;
-	name: string;
-	email: string;
-	password: string;
-	slug: string;
-	avatar: string;
-	bio: string;
-	theme: string;
-	settings: {
-		public: boolean;
-		language: string;
-	};
-	createdAt: Date;
-	updatedAt: Date;
-}
-
-const userSchema = new mongoose.Schema<IUser>(
+const userSchema = new mongoose.Schema(
 	{
 		name: { type: String, required: true, trim: true },
 		email: { type: String, required: true, unique: true, trim: true, lowercase: true },
@@ -36,6 +19,6 @@ const userSchema = new mongoose.Schema<IUser>(
 	}
 );
 
-const User = mongoose.model<IUser>("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User;
