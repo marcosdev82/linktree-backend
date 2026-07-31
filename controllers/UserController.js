@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
+import createUserToken from "../utils/create-user-token.js";
 import { createUniqueSlug, normalizeSlug } from "../utils/userSlug.js";
 
 export async function createUser(req, res) {
@@ -56,23 +57,7 @@ export async function createUser(req, res) {
 
 		await user.save();
 
-		const responseUser = {
-			_id: user._id,
-			name: user.name,
-			email: user.email,
-			slug: user.slug,
-			avatar: user.avatar,
-			bio: user.bio,
-			theme: user.theme,
-			settings: user.settings,
-			createdAt: user.createdAt,
-			updatedAt: user.updatedAt,
-		};
-
-		res.status(201).json({
-			message: "Usuário criado com sucesso",
-			newUser: responseUser,
-		});
+		return createUserToken(user, res);
 		
 	} catch (error) {
 		res.status(500).json({ message: "Erro ao criar usuário", error });
