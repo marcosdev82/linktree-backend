@@ -69,10 +69,89 @@ export async function createUser(req, res) {
 }
 
 export async function editUser(req, res) {
-	
-	res.status(200).json({ message: "deu certo" });
- 
+	try {
+		const { id } = req.params;
+		const { name, email, password, confirmPassword, bio, theme, avatar } = req.body ?? {};
 
+		const user = await User.findById(id);
+
+		if (!user) {
+			res.status(404).json({ message: "Usuário não encontrado" });
+			return;
+		}
+
+		if (email) {
+			const normalizedEmail = email.trim().toLowerCase();
+			const existingUser = await User.findOne({
+				email: normalizedEmail,
+				_id: { $ne: id },
+			});
+
+			if (existingUser) {
+				res.status(422).json({ message: "E-mail já cadastrado" });
+				return;
+			}
+
+			user.email = normalizedEmail;
+		}
+
+		if (name) {
+			user.name = name;
+
+			const baseSlug = normalizeSlug(name) || "usuario";
+			let slug = baseSlug;
+			let counter = 1;
+
+			while (await User.exists({ slug, _id: { $ne: id } })) {
+				counter += 1;
+				slug = `${baseSlug}-${counter}`;
+			}
+
+			user.slug = slug;
+		}
+
+		if (password) {
+			if (!confirmPassword) {
+				res.status(422).json({ message: "Confirmação de senha é obrigatória" });
+				return;
+			}
+
+			if (password !== confirmPassword) {
+				res.status(422).json({ message: "As senhas não coincidem" });
+				return;
+			}
+
+			const saltRounds = 12;
+			user.password = await bcrypt.hash(password, saltRounds);
+		}
+
+		if (bio !== undefined) user.bio = bio;
+		if (theme !== undefined) user.theme = theme;
+		if (avatar !== undefined) user.avatar = avatar;
+
+		await user.save();
+
+		res.status(200).json({
+			message: "Usuário atualizado com sucesso",
+			user: {
+				_id: user._id,
+				name: user.name,
+				email: user.email,
+				slug: user.slug,
+				avatar: user.avatar,
+				bio: user.bio,
+				theme: user.theme,
+				settings: user.settings,
+				createdAt: user.createdAt,
+				updatedAt: user.updatedAt,
+			},
+		});
+	} catch (error) {
+		res.status(500).json({
+			message: "Erro ao editar usuário",
+			error: error.message,
+		});
+	}
 }
 
 export async function listUsers(_req, res) {
