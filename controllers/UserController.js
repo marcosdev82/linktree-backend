@@ -75,6 +75,10 @@ export async function editUser(req, res) {
 
 		const user = await User.findById(id);
 
+		if (req.file) {
+			image = req.file.filename
+		}
+
 		if (!user) {
 			res.status(404).json({ message: "Usuário não encontrado" });
 			return;
@@ -237,8 +241,6 @@ export async function loginUser(req, res) {
 
 export async function checkUser(req, res) {
 	let currentUser;
-
-	console.log("Authorization Header:", req.headers.authorization);
 
 	if (req.headers.authorization) {
 
