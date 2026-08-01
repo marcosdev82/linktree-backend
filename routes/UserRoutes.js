@@ -13,7 +13,16 @@ userRoutes.post("/login", loginUser);
 userRoutes.get("/checkuser", checkUser);
 userRoutes.get("/:id", getUserById);
 userRoutes.get("/:slug", getUserBySlug);
-userRoutes.patch("/edit/:id", checkToken, imageUpload.single("image"), editUser);
+userRoutes.patch(
+	"/edit/:id",
+	checkToken,
+	imageUpload.fields([
+		{ name: "image", maxCount: 1 },
+		{ name: "avatar", maxCount: 1 },
+		{ name: "imagge", maxCount: 1 },
+	]),
+	editUser
+);
 
 
 export default userRoutes;

@@ -71,12 +71,18 @@ export async function createUser(req, res) {
 export async function editUser(req, res) {
 	try {
 		const { id } = req.params;
-		const { name, email, password, confirmPassword, bio, theme, avatar } = req.body ?? {};
+		let { name, email, password, confirmPassword, bio, theme, avatar } = req.body ?? {};
 
 		const user = await User.findById(id);
 
-		if (req.file) {
-			image = req.file.filename
+		const uploadedImage =
+			req.file ||
+			req.files?.image?.[0] ||
+			req.files?.avatar?.[0] ||
+			req.files?.imagge?.[0];
+
+		if (uploadedImage) {
+			avatar = uploadedImage.filename;
 		}
 
 		if (!user) {
