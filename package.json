@@ -6,7 +6,7 @@
   "type": "module",
   "main": "views/index.js",
   "scripts": {
-    "dev": "nodemon --watch views --watch routes --watch controllers --watch models --watch config --ext js --exec \"node\" views/index.js",
+    "dev": "nodemon --watch .env --watch views --watch routes --watch controllers --watch models --watch config --ext js --exec \"node\" views/index.js",
     "start": "node views/index.js"
   },
   "license": "ISC",
